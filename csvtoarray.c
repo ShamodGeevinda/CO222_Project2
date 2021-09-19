@@ -5,6 +5,8 @@
  
 int printAll();
 int timeSeconds(char str[10]); 
+void deleteEntry(int pos);
+void search(char str[30], int index);
 
 typedef struct _ {
 	char name[30];
@@ -73,6 +75,9 @@ int main()
         // Close the file
         fclose(fp);
     }
+	for(int i=0;i<ind+1;i++){
+		search(data[i].name, i);
+	}
 	printAll();
 	printf("%d\n",ind);
     return 0;
@@ -100,5 +105,24 @@ int timeSeconds(char str[10]){
         p = strtok (NULL, ":");
     }
 	return  atoi(array[2])+(atoi(array[1])*60)+(atoi(array[0])*3600);
+	
+}
+void search(char str[30], int index){
+	for (int i =index+1; i< ind+1;i++){
+		if(!strcmp(str, data[i].name)){
+			data[index].meetings++;
+			data[index].participants+=data[i].participants;
+			data[index].seconds += data[i].seconds;
+			deleteEntry(i);
+			ind--;
+			
+		}
+	}	
+	
+}
+void deleteEntry(int pos){
+	for(int i=pos; i<ind; i++){
+            data[i] = data[i + 1];
+        } 
 	
 }
