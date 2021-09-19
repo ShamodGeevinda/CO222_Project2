@@ -3,6 +3,14 @@
 #include <string.h>
   
 // Driver Code
+struct _{
+	char name[30];
+	char participants[4];
+	char time[8];
+	int intParticipants;
+	int minutes;
+	int meetings;
+}data;
 int main()
 {
     // Substitute the full file path
@@ -20,16 +28,14 @@ int main()
         int row = 0;
         int column = 0;
   
-        while (fgets(buffer,
-                     1024, fp)) {
+        while (fgets(buffer,1024, fp)) {
             column = 0;
             row++;
   
             // To avoid printing of column
             // names in file can be changed
             // according to need
-            if (row == 1)
-                continue;
+            
   
             // Splitting the data
             char* value = strtok(buffer, ", ");

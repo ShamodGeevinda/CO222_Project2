@@ -1,0 +1,21 @@
+Cannot open one or more given files
+
+
+wrong flag
+
+Invalid option [-flag]
+usage: ./samplev1 [-l length] [-m | -t | -p] [--scaled] filename1 filename2 ..
+
+
+-l -5
+
+Invalid option(negative) for [-l]
+usage: ./samplev1 [-l length] [-m | -t | -p] [--scaled] filename1 filename2 ..
+
+any other word in input
+
+Only .csv files should be given as inputs.
+
+─# ./samplev1 meetingData.csv meetingData2.csv -l  
+Not enough options for [-l]
+usage: ./samplev1 [-l length] [-m | -t | -p] [--scaled] filename1 filename2 ..
