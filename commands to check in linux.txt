@@ -1,0 +1,7 @@
+./samplev1 meetingData.csv -t -l 2
+
+./samplev1 meetingData.csv -m -l 2
+
+./samplev1 meetingData.csv -p -l 2
+
+./samplev1 meetingData.csv -l 2

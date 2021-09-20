@@ -11,6 +11,8 @@ void secToMin();
 void sortTime();
 void sortMeetings();
 void sortParticipants();
+int maxLen(int limit);
+int numLen(int n);
 
 typedef struct _ {
 	char name[30];
@@ -88,6 +90,8 @@ int main()
 	sortMeetings();
 	printAll();
 	printf("%d\n",ind);
+	printf("%d\n", maxLen(5));
+	printf("%d\n", numLen(12364));
     return 0;
 }
 
@@ -112,7 +116,7 @@ int timeSeconds(char str[10]){
 		i++;
         p = strtok (NULL, ":");
     }
-	return  atoi(array[2])+(atoi(array[1])*60)+(atoi(array[0])*3600);
+	return  /*atoi(array[2])+*/(atoi(array[1])*60)+(atoi(array[0])*3600);
 	
 }
 
@@ -195,4 +199,30 @@ void sortParticipants(){
         
     }
 	
+}
+
+int maxLen(int limit){
+	int val = 0;
+	for(int i=0; i<limit;i++){
+		if(strlen(data[i].name)>val){
+			val = strlen(data[i].name);
+		}
+		
+	}
+	return val;
+}
+
+int numLen(int n) {
+  
+  int count = 0;
+ 
+  // iterate at least once, then until n becomes 0
+  // remove last digit from n in each iteration
+  // increase count by 1 in each iteration
+  do {
+    n /= 10;
+    ++count;
+  } while (n != 0);
+
+  return count;
 }
