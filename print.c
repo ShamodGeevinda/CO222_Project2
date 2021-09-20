@@ -2,6 +2,10 @@
 #include <stdlib.h>
 #include <string.h>
 void print(int lim, int val, int ind);
+void printFinalLine(int maxlen);
+void printSpaces(int maxlen);
+void printSquares(int squares);
+
 
 typedef struct _ {
 	int val;
@@ -36,22 +40,17 @@ int main(){
 	for (int i=0; i<5; i++){{}
 		print(limit,array[i].val,i);
 	}
-	
+	printFinalLine(maxlen);
 	return 0;
 }
 
 void print(int lim, int val,int ind){
 	int squares = val/pfactor;
+	
 	//line1
-	for (int i=0; i<maxlen+1; i++){
-		printf(" ");
-		
-	}
+	printSpaces(maxlen);
 	printf("\u2502");
-	for (int i=0; i<squares; i++){
-		printf("\u2591");
-		
-	}
+	printSquares(squares);
 	printf("\n");
 	
 	//line 2
@@ -60,33 +59,46 @@ void print(int lim, int val,int ind){
 		printf(" ");
 	}printf("\u2502");
 	
-	for (int i=0; i<squares; i++){
-		printf("\u2591");
-		
-	}printf("%d", val);
+	printSquares(squares);
+	printf("%d", val);
 	printf("\n");
 	
 	//line 3
+	printSpaces(maxlen);
+	printf("\u2502");
+	printSquares(squares);
+	printf("\n");
+	
+	//line4 
+	printSpaces(maxlen);
+	printf("\u2502");
+	printf("\n");
+	
+	
+	
+	
+}
+
+void printFinalLine(int maxlen){
+	printSpaces(maxlen);
+	printf("\u2514");
+	for (int i=0; i<80-maxlen-1; i++){
+		printf("\u2500");
+		
+	}
+	printf("\n");
+}
+void printSpaces(int maxlen){
 	for (int i=0; i<maxlen+1; i++){
 		printf(" ");
 		
 	}
-	printf("\u2502");
+}
+
+void printSquares(int squares){
 	for (int i=0; i<squares; i++){
 		printf("\u2591");
 		
 	}
-	printf("\n");
-	
-	//line4 
-	for (int i=0; i<maxlen+1; i++){
-		printf(" ");
-		
-	}
-	printf("\u2502");
-	printf("\n");
-	
-	
-	
 	
 }
