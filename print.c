@@ -5,6 +5,7 @@ void print(int lim, int val, int ind);
 void printFinalLine(int maxlen);
 void printSpaces(int maxlen);
 void printSquares(int squares);
+int sum();
 
 
 typedef struct _ {
@@ -34,19 +35,25 @@ int main(){
 	 
 	printarea = 80-maxlen - 1 -maxdig;
 	pfactor = (float)array[0].val/(float)printarea;
+	
+	//pfactor = s/(float)printarea;
+	
 	printf("%d\n",printarea);
 	printf("%d\n", array[0].val);;
 	printf("%f\n",pfactor);
+	
 	for (int i=0; i<5; i++){{}
 		print(limit,array[i].val,i);
 	}
 	printFinalLine(maxlen);
+	
 	return 0;
 }
 
 void print(int lim, int val,int ind){
-	int squares = val/pfactor;
-	
+	int squares = val/pfactor;// check; for scaled mode
+	int s= sum(5);
+	//squares = printarea * val / s; // for non scaled mode
 	//line1
 	printSpaces(maxlen);
 	printf("\u2502");
@@ -101,4 +108,12 @@ void printSquares(int squares){
 		
 	}
 	
+}
+
+int sum(int limit){
+	int sum=0;
+	for (int i=0; i<limit; i++){
+		sum+=array[i].val;
+	}
+	return sum;
 }

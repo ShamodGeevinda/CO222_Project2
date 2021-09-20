@@ -13,6 +13,7 @@ void sortMeetings();
 void sortParticipants();
 int maxLen(int limit);
 int numLen(int n);
+void fileRead(char *);
 
 typedef struct _ {
 	char name[30];
@@ -27,67 +28,32 @@ typedef struct _ {
 data_t data[100];
 int ind = -1;
 
+
+//char csvarray[2][50];
+
 int main()
 {
-    // Substitute the full file path
-    // for the string file_path
-    FILE* fp = fopen("meetingData.csv", "r");
-  
-    if (!fp)
-        printf("Can't open file\n");
-  
-    else {
-        // Here we have taken size of
-        // array 1024 you can modify it
-        char str[1024];
-  
-        int row = 0;
-        int column = 0;
-  
-        while (fgets(str,1024, fp)) {
-            column = 0;
-            row++;
-  
-            // Splitting the data
-            char* value = strtok(str, ",");
-			ind++;
-            while (value) {
-                // Column 1
-				
-                if (column == 0) {
-					strcpy(data[ind].name,value); // stpcpy was
-
-                }
-  
-                // Column 2
-                if (column == 1) {
-				   //strcpy(data[ind].participants,value);
-				   data[ind].participants = atoi(value);
-                }
-  
-                // Column 3
-                if (column == 2) {
-					strcpy(data[ind].time,value);
-                }
-				
-                value = strtok(NULL, ","); // updating value
-                column++;
-            }
-			data[ind].seconds = timeSeconds(data[ind].time);
-			data[ind].meetings =1;
-  
-        }
-  
-        // Close the file
-        fclose(fp);
-    }
+	char csvarray[2][50] = {  "meetingData.csv" , "meetingData.csv" }; 
+    for (int i=0; i<2; i++){
+		fileRead(csvarray[i]);
+		
+	}
+	//fileRead(csvarray[0]);
+	secToMin();
+	
+	// search and delete multiple inputs
+	
 	for(int i=0;i<ind+1;i++){
 		search(data[i].name, i);
 	}
-	secToMin();
+	
+	
+	sortTime();
+	
+	
 	//sortTime();
 	//sortParticipants();
-	sortMeetings();
+	//sortMeetings();
 	printAll();
 	printf("%d\n",ind);
 	printf("%d\n", maxLen(5));
@@ -96,7 +62,7 @@ int main()
 }
 
 int printAll(){
-    for(int i=0; i<ind; i++){
+    for(int i=0; i<ind+1; i++){
         printf("name->%s participants->%d minutes->%d meetings->%d\n",data[i].name,data[i].participants, data[i].minutes, data[i].meetings);
     }
     printf("\n");
@@ -120,24 +86,31 @@ int timeSeconds(char str[10]){
 	
 }
 
+
+
 void search(char str[30], int index){
-	for (int i =index+1; i< ind+1;i++){
-		if(!strcmp(str, data[i].name)){
+	for (int i =(index+1); i< ind+1;i++){ // search for whole array excluding index val
+		
+		if(!(strncmp( data[i].name, str,29))){
 			data[index].meetings++;
 			data[index].participants+=data[i].participants;
 			data[index].seconds += data[i].seconds;
+			data[index].minutes += data[i].minutes;
 			deleteEntry(i);
-			ind--;
+			i--;
+			//printAll();
 			
 		}
 	}	
 	
 }
 
+
 void deleteEntry(int pos){
 	for(int i=pos; i<ind; i++){
             data[i] = data[i + 1];
         } 
+	ind=ind-1;
 	
 }
 
@@ -225,4 +198,58 @@ int numLen(int n) {
   } while (n != 0);
 
   return count;
+}
+
+void fileRead(char *str){
+	FILE* fp = fopen(str, "r");
+  
+    if (!fp)
+        printf("Can't open file\n");
+  
+    else {
+        // Here we have taken size of
+        // array 1024 you can modify it
+        char str[1024];
+  
+        int row = 0;
+        int column = 0;
+  
+        while (fgets(str,1024, fp)) {
+            column = 0;
+            row++;
+  
+            // Splitting the data
+            char* value = strtok(str, ",");
+			ind++;
+            while (value) {
+                // Column 1
+				
+                if (column == 0) {
+					strncpy(data[ind].name,value,29); // stpcpy was
+
+                }
+  
+                // Column 2
+                if (column == 1) {
+				   //strcpy(data[ind].participants,value);
+				   data[ind].participants = atoi(value);
+                }
+  
+                // Column 3
+                if (column == 2) {
+					strcpy(data[ind].time,value);
+                }
+				
+                value = strtok(NULL, ","); // updating value
+                column++;
+            }
+			data[ind].seconds = timeSeconds(data[ind].time);
+			data[ind].meetings =1;
+  
+        }
+  
+        // Close the file
+        fclose(fp);
+    }
+	
 }
