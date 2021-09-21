@@ -16,6 +16,7 @@ int maxLen(int limit);
 long int numLen(int n);
 void fileRead(char *);
 long int strLen(char *);
+void stringLwr(char *);
 
 typedef struct _ {
 	char name[30];
@@ -49,7 +50,7 @@ int main(int argc, char **argv)
 		return 0;
 	}
 	
-	for (int i=0; i<argc; i++){
+	for (int i=1; i<argc; i++){
 		if(!strcmp(argv[i],"-m")){
 			mval = 1;
 		}
@@ -67,7 +68,7 @@ int main(int argc, char **argv)
 		}
 		else if(!strcmp(argv[i],"-l")){
 			if(argc>=(i+1)){// argc>i
-			printf("%ld %ld\n",strLen(argv[i+1]),numLen(atoi(argv[i+1])));
+			//printf("%ld %ld\n",strLen(argv[i+1]),numLen(atoi(argv[i+1])));
 				if(strLen(argv[i+1])==numLen(atoi(argv[i+1]))){
 					
 					if(argv[i+1][0]=='-'){
@@ -100,6 +101,23 @@ int main(int argc, char **argv)
 		else{
 			filenameIndex++;
 			strcpy(filenames[filenameIndex],argv[i]);
+			//printf("%s\n",argv[i]);
+		}
+	}
+	for (int i=0; i<filenameIndex+1; i++){
+		//printf("%s\n", filenames[i]);
+	}
+	
+	for (int i=0; i<filenameIndex+1; i++){
+		//printf("%s\n",filenames[i]);
+		
+		if (strcmp(&filenames[i][strlen(filenames[i]) - 4], ".csv") == 0){
+			stringLwr(filenames[i]);
+			//printf("%s\n",filenames[i]);
+			
+		}else{
+			printf("Only .csv files should be given as inputs.\n");
+			return 0;
 		}
 	}
 	
@@ -335,4 +353,16 @@ long int strLen(char * str){
 		return strlen(str);
 	}
 	
+}
+
+void stringLwr(char *s)
+{
+    int i=0;
+    while(s[i]!='\0')
+    {
+        if(s[i]>='A' && s[i]<='Z'){
+            s[i]=s[i]+32;
+        }
+        ++i;
+    }
 }
