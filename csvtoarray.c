@@ -13,8 +13,9 @@ void sortTime();
 void sortMeetings();
 void sortParticipants();
 int maxLen(int limit);
-int numLen(int n);
+long int numLen(int n);
 void fileRead(char *);
+long int strLen(char *);
 
 typedef struct _ {
 	char name[30];
@@ -35,7 +36,7 @@ int tval =0;
 int lval = 10;
 int scale =0;
 int filenameIndex = -1;
-char *filenames[100];
+char filenames[100][100];
 
 
 //char csvarray[2][50];
@@ -65,9 +66,11 @@ int main(int argc, char **argv)
 			
 		}
 		else if(!strcmp(argv[i],"-l")){
-			if(argc>i+1){// argc>i
-				if(!isdigit(argv[i+1])){
-					if(argv[i+1]<0){
+			if(argc>=(i+1)){// argc>i
+			printf("%ld %ld\n",strLen(argv[i+1]),numLen(atoi(argv[i+1])));
+				if(strLen(argv[i+1])==numLen(atoi(argv[i+1]))){
+					
+					if(argv[i+1][0]=='-'){
 						printf("Invalid option(negative) for [-l]\n");
 						printf("usage: ./samplev1 [-l length] [-m | -t | -p] [--scaled] filename1 filename2 ..\n");
 						return 0;
@@ -256,7 +259,7 @@ int maxLen(int limit){
 	return val;
 }
 
-int numLen(int n) {
+long int numLen(int n) {
   
   int count = 0;
  
@@ -323,5 +326,13 @@ void fileRead(char *str){
         // Close the file
         fclose(fp);
     }
+	
+}
+long int strLen(char * str){
+	if (str[0] == '-'){
+		return strlen(str)-1;
+	}else{
+		return strlen(str);
+	}
 	
 }
