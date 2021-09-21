@@ -1,7 +1,11 @@
 Cannot open one or more given files
 
+./samplev1                                  
+No input files were given
+usage: ./samplev1 [-l length] [-m | -t | -p] [--scaled] filename1 filename2 ..
 
-wrong flag
+
+wrong flag // high priotiy
 
 Invalid option [-flag]
 usage: ./samplev1 [-l length] [-m | -t | -p] [--scaled] filename1 filename2 ..
@@ -12,10 +16,27 @@ usage: ./samplev1 [-l length] [-m | -t | -p] [--scaled] filename1 filename2 ..
 Invalid option(negative) for [-l]
 usage: ./samplev1 [-l length] [-m | -t | -p] [--scaled] filename1 filename2 ..
 
-any other word in input
 
+any other word in input
 Only .csv files should be given as inputs.
+./samplev1 meetingData                                                                                                         1 ⨯
+Only .csv files should be given as inputs.
+
 
 ─# ./samplev1 meetingData.csv meetingData2.csv -l  
 Not enough options for [-l]
 usage: ./samplev1 [-l length] [-m | -t | -p] [--scaled] filename1 filename2 ..
+
+/samplev1 meetingData.csv -m -l 0 anb.csv                                                                                     1 ⨯
+                                                                                                                                       
+┌──(root💀kali)-[/media/sf_Kali_linux_shared_folder/Project2]
+└─# ./samplev1 meetingData.csv -m -l 8 anb.csv                                                                                     1 ⨯
+Cannot open one or more given files
+
+./samplev1 -m -l 2                                                                                                             1 ⨯
+No input files were given
+usage: ./samplev1 [-l length] [-m | -t | -p] [--scaled] filename1 filename2 ..
+
+
+./samplev1 -m -l 2 empty.csv                                                                                                   1 ⨯
+No data to process

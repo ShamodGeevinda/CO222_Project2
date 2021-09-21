@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
  
 int printAll();
 int timeSeconds(char str[10]); 
@@ -27,17 +28,87 @@ typedef struct _ {
 
 data_t data[100];
 int ind = -1;
+int arrayCount=0;
+int mval=0;
+int pval =0;
+int tval =0;
+int lval = 10;
+int scale =0;
+int filenameIndex = -1;
+char *filenames[100];
 
 
 //char csvarray[2][50];
 
-int main()
+int main(int argc, char **argv)
 {
-	char csvarray[2][50] = {  "meetingData.csv" , "meetingData.csv" }; 
-    for (int i=0; i<2; i++){
+	if(argc==1){
+		printf("No input files were given\n");
+		printf("usage: ./samplev1 [-l length] [-m | -t | -p] [--scaled] filename1 filename2 ..\n");
+		return 0;
+	}
+	
+	for (int i=0; i<argc; i++){
+		if(!strcmp(argv[i],"-m")){
+			mval = 1;
+		}
+		else if(!strcmp(argv[i],"-t")){
+			tval = 1;
+			
+		}
+		else if(!strcmp(argv[i],"-p")){
+			pval = 1;
+			
+		}
+		else if(!strcmp(argv[i],"--scaled")){
+			scale = 1;
+			
+		}
+		else if(!strcmp(argv[i],"-l")){
+			if(argc>i+1){// argc>i
+				if(!isdigit(argv[i+1])){
+					if(argv[i+1]<0){
+						printf("Invalid option(negative) for [-l]\n");
+						printf("usage: ./samplev1 [-l length] [-m | -t | -p] [--scaled] filename1 filename2 ..\n");
+						return 0;
+					}else{
+						lval=atoi(argv[i+1]);
+						i++;
+					}
+					
+				}else{
+					printf("Invalid options for [-l]\n");
+					printf("usage: ./samplev1 [-l length] [-m | -t | -p] [--scaled] filename1 filename2 ..\n");	
+					return 0;
+				}
+				
+			}else{
+				printf("Not enough options for [-l]\n");
+				printf("usage: ./samplev1 [-l length] [-m | -t | -p] [--scaled] filename1 filename2 ..\n");
+				return 0;
+			}
+			
+		}
+		else if( argv[i][0]=='-' && ( strcmp(argv[i],"-m") && strcmp(argv[i],"-p") && strcmp(argv[i],"-t") && strcmp(argv[i],"-l") && strcmp(argv[i],"--scaled") )){
+			printf("Invalid option [%s]\n",argv[i]);
+			printf("usage: ./samplev1 [-l length] [-m | -t | -p] [--scaled] filename1 filename2 ..\n");
+			return 0;
+		}
+		else{
+			filenameIndex++;
+			strcpy(filenames[filenameIndex],argv[i]);
+		}
+	}
+	
+	char *csvarray[50] ; 
+    csvarray[0] = "meetingData.csv";
+	//int arrayLen = sizeof(csvarray)/sizeof(csvarray[0]);
+	for (int i=0; i<arrayCount; i++){
 		fileRead(csvarray[i]);
 		
 	}
+	
+	printf("%d\n",arrayCount);
 	//fileRead(csvarray[0]);
 	secToMin();
 	
@@ -56,8 +127,8 @@ int main()
 	//sortMeetings();
 	printAll();
 	printf("%d\n",ind);
-	printf("%d\n", maxLen(5));
-	printf("%d\n", numLen(12364));
+	//printf("%d\n", maxLen(5));
+	//printf("%d\n", numLen(12364));
     return 0;
 }
 
@@ -207,6 +278,7 @@ void fileRead(char *str){
         printf("Can't open file\n");
   
     else {
+		arrayCount++;
         // Here we have taken size of
         // array 1024 you can modify it
         char str[1024];
