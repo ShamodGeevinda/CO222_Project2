@@ -17,6 +17,11 @@ long int numLen(int n);
 void fileRead(char *);
 long int strLen(char *);
 void stringLwr(char *);
+void print(int lim, int val, int ind);
+void printFinalLine(int maxlen);
+void printSpaces(int maxlen);
+void printSquares(int squares);
+int sum();
 
 typedef struct _ {
 	char name[30];
@@ -30,7 +35,6 @@ typedef struct _ {
 
 data_t data[100];
 int ind = -1;
-int arrayCount=0;
 int mval=0;
 int pval =0;
 int tval =0;
@@ -38,6 +42,10 @@ int lval = 10;
 int scale =0;
 int filenameIndex = -1;
 char filenames[100][100];
+int printarea;
+float pfactor;
+int maxlen=0;
+int maxdig=0;
 
 
 //char csvarray[2][50];
@@ -120,17 +128,18 @@ int main(int argc, char **argv)
 			return 0;
 		}
 	}
+	if(mval+tval+pval>1){
+		printf("Cannot plot multiple parameters in same graph.\n");
+		printf("usage: ./samplev1 [-l length] [-m | -t | -p] [--scaled] filename1 filename2 ..\n");
+	}
 	
-	char *csvarray[50] ; 
-    csvarray[0] = "meetingData.csv";
-	//int arrayLen = sizeof(csvarray)/sizeof(csvarray[0]);
-	for (int i=0; i<arrayCount; i++){
-		fileRead(csvarray[i]);
+	
+	for (int i=0; i<filenameIndex+1; i++){
+		fileRead(filenames[i]);
 		
 	}
 	
-	printf("%d\n",arrayCount);
-	//fileRead(csvarray[0]);
+	
 	secToMin();
 	
 	// search and delete multiple inputs
@@ -140,14 +149,41 @@ int main(int argc, char **argv)
 	}
 	
 	
-	sortTime();
+	
+	if(lval!=0 && ind==-1){
+		printf("No data to process\n");
+		return 0;
+	}
+	
+	if(tval==1){
+		sortTime();
+	}else if(pval==1){
+		sortParticipants();
+	}else{
+		sortMeetings();
+	}
+	
+	for (int i=0; i<lval; i++){
+		if(strlen(data[i].name)>maxlen){
+			maxlen = strlen(data[i].name);
+		}
+		if(numLen(data[i].meetings)>maxlen){
+			maxlen = numLen(data[i].meetings);
+		}
+		
+		
+	}
+	printarea = 80-maxlen - 1 -maxdig; // find maxlen,maxdig
+	pfactor = (float)data[0].meetings/(float)printarea;
+	
+	for (int i=0; i<lval; i++){
+		print(lval,data[i].meetings,i);
+	}
+	printFinalLine(maxlen);
 	
 	
-	//sortTime();
-	//sortParticipants();
-	//sortMeetings();
-	printAll();
-	printf("%d\n",ind);
+	//printAll();
+	//printf("%d\n",ind);
 	//printf("%d\n", maxLen(5));
 	//printf("%d\n", numLen(12364));
     return 0;
@@ -296,10 +332,10 @@ void fileRead(char *str){
 	FILE* fp = fopen(str, "r");
   
     if (!fp)
-        printf("Can't open file\n");
+        printf("Cannot open one or more given files\n");
   
     else {
-		arrayCount++;
+		//arrayCount++;
         // Here we have taken size of
         // array 1024 you can modify it
         char str[1024];
@@ -346,6 +382,7 @@ void fileRead(char *str){
     }
 	
 }
+
 long int strLen(char * str){
 	if (str[0] == '-'){
 		return strlen(str)-1;
@@ -365,4 +402,77 @@ void stringLwr(char *s)
         }
         ++i;
     }
+}
+
+void print(int lim, int val,int ind){
+	int squares ;
+	int s= sum(lim);
+	//squares = printarea * val / s; // for non scaled mode
+	if(scale==1){
+		squares = val/pfactor;
+	}else{
+		squares = printarea * val / s;
+	}
+	//line1
+	printSpaces(maxlen);
+	printf("\u2502");
+	printSquares(squares);
+	printf("\n");
+	
+	//line 2
+	printf("%s",data[ind].name);
+	for (int i=0; i<maxlen+1-strlen(data[ind].name); i++){
+		printf(" ");
+	}printf("\u2502");
+	
+	printSquares(squares);
+	printf("%d", val);
+	printf("\n");
+	
+	//line 3
+	printSpaces(maxlen);
+	printf("\u2502");
+	printSquares(squares);
+	printf("\n");
+	
+	//line4 
+	printSpaces(maxlen);
+	printf("\u2502");
+	printf("\n");
+	
+	
+	
+	
+}
+
+void printFinalLine(int maxlen){
+	printSpaces(maxlen);
+	printf("\u2514");
+	for (int i=0; i<80-maxlen-1; i++){
+		printf("\u2500");
+		
+	}
+	printf("\n");
+}
+void printSpaces(int maxlen){
+	for (int i=0; i<maxlen+1; i++){
+		printf(" ");
+		
+	}
+}
+
+void printSquares(int squares){
+	for (int i=0; i<squares; i++){
+		printf("\u2591");
+		
+	}
+	
+}
+
+int sum(int limit){
+	int sum=0;
+	for (int i=0; i<limit; i++){
+		sum+=data[i].meetings;
+	}
+	return sum;
 }
