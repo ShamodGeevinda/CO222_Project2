@@ -22,6 +22,9 @@ void printFinalLine(int maxlen);
 void printSpaces(int maxlen);
 void printSquares(int squares);
 int sum();
+void meetings();
+void time();;
+void participants();
 
 typedef struct _ {
 	char name[30];
@@ -154,32 +157,23 @@ int main(int argc, char **argv)
 		printf("No data to process\n");
 		return 0;
 	}
-	
+	if(lval>ind+1){
+		lval=ind+1;;
+		
+	}
 	if(tval==1){
 		sortTime();
+		time();
 	}else if(pval==1){
 		sortParticipants();
+		participants();
 	}else{
 		sortMeetings();
+		meetings();
 	}
 	
-	for (int i=0; i<lval; i++){
-		if(strlen(data[i].name)>maxlen){
-			maxlen = strlen(data[i].name);
-		}
-		if(numLen(data[i].meetings)>maxlen){
-			maxlen = numLen(data[i].meetings);
-		}
-		
-		
-	}
-	printarea = 80-maxlen - 1 -maxdig; // find maxlen,maxdig
-	pfactor = (float)data[0].meetings/(float)printarea;
 	
-	for (int i=0; i<lval; i++){
-		print(lval,data[i].meetings,i);
-	}
-	printFinalLine(maxlen);
+	
 	
 	
 	//printAll();
@@ -420,7 +414,7 @@ void print(int lim, int val,int ind){
 	printf("\n");
 	
 	//line 2
-	printf("%s",data[ind].name);
+	printf(" %s",data[ind].name);
 	for (int i=0; i<maxlen+1-strlen(data[ind].name); i++){
 		printf(" ");
 	}printf("\u2502");
@@ -448,21 +442,21 @@ void print(int lim, int val,int ind){
 void printFinalLine(int maxlen){
 	printSpaces(maxlen);
 	printf("\u2514");
-	for (int i=0; i<80-maxlen-1; i++){
+	for (int i=0; i<80-maxlen-1-2; i++){
 		printf("\u2500");
 		
 	}
 	printf("\n");
 }
 void printSpaces(int maxlen){
-	for (int i=0; i<maxlen+1; i++){
+	for (int i=0; i<maxlen+2; i++){
 		printf(" ");
 		
 	}
 }
 
 void printSquares(int squares){
-	for (int i=0; i<squares; i++){
+	for (int i=0; i<squares-maxdig; i++){
 		printf("\u2591");
 		
 	}
@@ -475,4 +469,71 @@ int sum(int limit){
 		sum+=data[i].meetings;
 	}
 	return sum;
+}
+
+void meetings(){
+	for (int i=0; i<lval; i++){
+		if(strlen(data[i].name)>maxlen){
+			maxlen = strlen(data[i].name);
+		}
+		if(numLen(data[i].meetings)>maxdig){
+			maxdig = numLen(data[i].meetings);
+		}
+		
+		
+	}
+	printarea = 80-maxlen - 1 -maxdig; // find maxlen,maxdig
+	pfactor = (float)data[0].meetings/(float)printarea;
+	
+	for (int i=0; i<lval; i++){
+		print(lval,data[i].meetings,i);
+	}
+	if (lval>0){
+		printFinalLine(maxlen);
+	}
+	
+}
+
+void participants(){
+	for (int i=0; i<lval; i++){
+		if(strlen(data[i].name)>maxlen){
+			maxlen = strlen(data[i].name);
+		}
+		if(numLen(data[i].participants)>maxdig){
+			maxdig = numLen(data[i].participants);
+		}
+		
+		
+	}
+	printarea = 80-maxlen - 1 -maxdig; // find maxlen,maxdig
+	pfactor = (float)data[0].participants/(float)printarea;
+	
+	for (int i=0; i<lval; i++){
+		print(lval,data[i].participants,i);
+	}
+	if (lval>0){
+		printFinalLine(maxlen);
+	}
+}
+
+void time(){
+	for (int i=0; i<lval; i++){
+		if(strlen(data[i].name)>maxlen){
+			maxlen = strlen(data[i].name);
+		}
+		if(numLen(data[i].minutes)>maxdig){
+			maxdig = numLen(data[i].minutes);
+		}
+		
+		
+	}
+	printarea = 80-maxlen - 1 -maxdig; // find maxlen,maxdig
+	pfactor = (float)data[0].minutes/(float)printarea;
+	
+	for (int i=0; i<lval; i++){
+		print(lval,data[i].minutes,i);
+	}
+	if (lval>0){
+		printFinalLine(maxlen);
+	}
 }
