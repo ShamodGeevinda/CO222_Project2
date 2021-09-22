@@ -161,6 +161,9 @@ int main(int argc, char **argv)
 		lval=ind+1;;
 		
 	}
+	
+	printf("\n");
+	
 	if(tval==1){
 		sortTime();
 		time();
@@ -399,14 +402,15 @@ void stringLwr(char *s)
 }
 
 void print(int lim, int val,int ind){
-	int squares ;
-	int s= sum(lim);
+	float squares ;
+	int s= sum();
 	//squares = printarea * val / s; // for non scaled mode
 	if(scale==1){
-		squares = val/pfactor;
+		squares = (float)val/pfactor;
 	}else{
-		squares = printarea * val / s;
+		squares = (float)printarea * (float)val / (float)s;
 	}
+	
 	//line1
 	printSpaces(maxlen);
 	printf("\u2502");
@@ -456,17 +460,25 @@ void printSpaces(int maxlen){
 }
 
 void printSquares(int squares){
-	for (int i=0; i<squares-maxdig; i++){
+	for (int i=0; i<squares; i++){
 		printf("\u2591");
 		
 	}
 	
 }
 
-int sum(int limit){
+int sum(){
 	int sum=0;
-	for (int i=0; i<limit; i++){
-		sum+=data[i].meetings;
+	for (int i=0; i<ind+1; i++){
+		if(pval==1){
+			sum+=data[i].participants;
+		}
+		if(tval==1){
+			sum+=data[i].minutes;
+		}
+		else{
+			sum+=data[i].meetings;
+		}
 	}
 	return sum;
 }
@@ -482,7 +494,7 @@ void meetings(){
 		
 		
 	}
-	printarea = 80-maxlen - 1 -maxdig; // find maxlen,maxdig
+	printarea = 80-maxlen - 3 -maxdig; // find maxlen,maxdig
 	pfactor = (float)data[0].meetings/(float)printarea;
 	
 	for (int i=0; i<lval; i++){
@@ -505,7 +517,7 @@ void participants(){
 		
 		
 	}
-	printarea = 80-maxlen - 1 -maxdig; // find maxlen,maxdig
+	printarea = 80-maxlen - 3 -maxdig; // find maxlen,maxdig
 	pfactor = (float)data[0].participants/(float)printarea;
 	
 	for (int i=0; i<lval; i++){
@@ -527,7 +539,7 @@ void time(){
 		
 		
 	}
-	printarea = 80-maxlen - 1 -maxdig; // find maxlen,maxdig
+	printarea = 80-maxlen - 3 -maxdig; // find maxlen,maxdig
 	pfactor = (float)data[0].minutes/(float)printarea;
 	
 	for (int i=0; i<lval; i++){
