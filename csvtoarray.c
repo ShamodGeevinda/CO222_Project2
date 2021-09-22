@@ -25,6 +25,7 @@ int sum();
 void meetings();
 void time();;
 void participants();
+int isNumber(char s[]);
 
 typedef struct _ {
 	char name[30];
@@ -80,12 +81,18 @@ int main(int argc, char **argv)
 		else if(!strcmp(argv[i],"-l")){
 			if(argc>=(i+1)){// argc>i
 			//printf("%ld %ld\n",strLen(argv[i+1]),numLen(atoi(argv[i+1])));
-				if(strLen(argv[i+1])==numLen(atoi(argv[i+1]))){
+				if(strLen(argv[i+1])==numLen(atoi(argv[i+1])) ){
 					
-					if(argv[i+1][0]=='-'){
+					if(argv[i+1][0]=='-' && isNumber(argv[i+1])){
 						printf("Invalid option(negative) for [-l]\n");
 						printf("usage: ./samplev1 [-l length] [-m | -t | -p] [--scaled] filename1 filename2 ..\n");
 						return 0;
+						}
+					else if(argv[i+1][0]=='-' && !isNumber(argv[i+1])){
+						printf("Invalid options for [-l]\n");
+						printf("usage: ./samplev1 [-l length] [-m | -t | -p] [--scaled] filename1 filename2 ..\n");	
+						return 0;
+						
 					}else{
 						lval=atoi(argv[i+1]);
 						i++;
@@ -406,8 +413,14 @@ void print(int lim, int val,int ind){
 	int s= sum();
 	//squares = printarea * val / s; // for non scaled mode
 	if(scale==1){
-		squares = (float)val/pfactor;
+		if(ind==0){
+			squares = printarea;
+		}
+		else{
+			squares = (float)val/pfactor;
+		}
 	}else{
+		 
 		squares = (float)printarea * (float)val / (float)s;
 	}
 	
@@ -473,7 +486,7 @@ int sum(){
 		if(pval==1){
 			sum+=data[i].participants;
 		}
-		if(tval==1){
+		else if(tval==1){
 			sum+=data[i].minutes;
 		}
 		else{
@@ -548,4 +561,13 @@ void time(){
 	if (lval>0){
 		printFinalLine(maxlen);
 	}
+}
+int isNumber(char s[])
+{
+    for (int i = 1; s[i]!= '\0'; i++)
+    {
+        if (isdigit(s[i]) == 0)
+              return 0;
+    }
+    return 1;
 }
