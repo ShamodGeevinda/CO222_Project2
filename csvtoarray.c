@@ -151,14 +151,14 @@ int main(int argc, char **argv)
 	}
 	
 	
-	secToMin();
+	//secToMin();
 	
 	// search and delete multiple inputs
-	
+	/*
 	for(int i=0;i<ind+1;i++){
 		search(data[i].name, i);
 	}
-	
+	*/
 	
 	
 	if(lval!=0 && ind==-1){
@@ -249,9 +249,9 @@ void deleteEntry(int pos){
 }
 
 void secToMin(){
-	for (int i=0;i<ind+1;i++){
-		data[i].minutes = data[i].seconds/60;
-	}
+	//for (int i=0;i<ind+1;i++){
+		data[ind].minutes = data[ind].seconds/60;
+	//}
 }
 
 void sortTime(){
@@ -386,6 +386,11 @@ void fileRead(char *str){
             }
 			data[ind].seconds = timeSeconds(data[ind].time);
 			data[ind].meetings =1;
+			
+			secToMin();
+			for(int i=0;i<ind+1;i++){
+				search(data[i].name, i);
+			}
   
         }
   
