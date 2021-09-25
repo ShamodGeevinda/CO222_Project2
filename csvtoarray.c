@@ -28,16 +28,16 @@ void participants();
 int isNumber(char s[]);
 
 typedef struct _ {
-	char name[30];
-	//char participants[8];
-	char time[10];
 	int participants;
 	int seconds;
 	int minutes;
 	int meetings;
+	char name[30];
+	char time[10];
+	
 }data_t;
 
-data_t data[100];
+data_t* data ;
 int ind = -1;
 int mval=0;
 int pval =0;
@@ -138,9 +138,10 @@ int main(int argc, char **argv)
 			return 0;
 		}
 	}
-	if(mval+tval+pval>1){
+	if(mval+tval+pval>1){// check
 		printf("Cannot plot multiple parameters in same graph.\n");
 		printf("usage: ./samplev1 [-l length] [-m | -t | -p] [--scaled] filename1 filename2 ..\n");
+		return 0;
 	}
 	
 	
@@ -168,8 +169,9 @@ int main(int argc, char **argv)
 		lval=ind+1;;
 		
 	}
-	
-	printf("\n");
+	if(lval>0){
+		printf("\n");
+	}
 	
 	if(tval==1){
 		sortTime();
@@ -354,6 +356,12 @@ void fileRead(char *str){
             // Splitting the data
             char* value = strtok(str, ",");
 			ind++;
+			if(ind>0){
+				data = realloc(data, (ind+1)*sizeof(data_t));
+				
+			}else{
+				data = (data_t*)malloc(sizeof(data_t));
+			}
             while (value) {
                 // Column 1
 				
