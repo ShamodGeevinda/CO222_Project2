@@ -1,10 +1,13 @@
+// C implementation of functional bar graph
 
+//includong headers
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
  
-int printAll();
+
+// prototyping functions
 int timeSeconds(char str[10]); 
 void deleteEntry(int pos);
 void search(char str[30], int index);
@@ -27,6 +30,7 @@ void time();;
 void participants();
 int isNumber(char s[]);
 
+// structure to store data
 typedef struct _ {
 	int participants;
 	int seconds;
@@ -37,6 +41,8 @@ typedef struct _ {
 	
 }data_t;
 
+
+// global variables
 data_t* data ;
 int ind = -1;
 int mval=0;
@@ -54,9 +60,9 @@ int maxdig=0;
 
 //char csvarray[2][50];
 
-int main(int argc, char **argv)
-{
-	if(argc==1){
+int main(int argc, char **argv){
+	// argument handeling
+	if(argc==1){ // if there isn't any input file
 		printf("No input files were given\n");
 		printf("usage: ./samplev1 [-l length] [-m | -t | -p] [--scaled] filename1 filename2 ..\n");
 		return 0;
@@ -79,8 +85,8 @@ int main(int argc, char **argv)
 			
 		}
 		else if(!strcmp(argv[i],"-l")){
-			if(argc>=(i+1)){// argc>i
-			//printf("%ld %ld\n",strLen(argv[i+1]),numLen(atoi(argv[i+1])));
+			if(argc>=(i+1)){
+				// checcking conditions for value after -l flag 
 				if(strLen(argv[i+1])==numLen(atoi(argv[i+1])) ){
 					
 					if(argv[i+1][0]=='-' && isNumber(argv[i+1])){
@@ -117,62 +123,59 @@ int main(int argc, char **argv)
 			return 0;
 		}
 		else{
+			// making array with filenames
 			filenameIndex++;
 			strcpy(filenames[filenameIndex],argv[i]);
-			//printf("%s\n",argv[i]);
+			
 		}
 	}
-	for (int i=0; i<filenameIndex+1; i++){
-		//printf("%s\n", filenames[i]);
-	}
 	
+	
+	// going through the filenaame array
 	for (int i=0; i<filenameIndex+1; i++){
-		//printf("%s\n",filenames[i]);
+		
 		
 		if (strcmp(&filenames[i][strlen(filenames[i]) - 4], ".csv") == 0){
-			stringLwr(filenames[i]);
-			//printf("%s\n",filenames[i]);
-			
+			// checking extension of files
+			// correct file
 		}else{
 			printf("Only .csv files should be given as inputs.\n");
 			return 0;
 		}
 	}
-	if(mval+tval+pval>1){// check
+	
+	// condition to check for multiple options
+	if(mval+tval+pval>1){
 		printf("Cannot plot multiple parameters in same graph.\n");
 		printf("usage: ./samplev1 [-l length] [-m | -t | -p] [--scaled] filename1 filename2 ..\n");
 		return 0;
 	}
 	
-	
+	// loop to read files
 	for (int i=0; i<filenameIndex+1; i++){
 		fileRead(filenames[i]);
 		
 	}
 	
 	
-	//secToMin();
-	
-	// search and delete multiple inputs
-	/*
-	for(int i=0;i<ind+1;i++){
-		search(data[i].name, i);
-	}
-	*/
-	
-	
-	if(lval!=0 && ind==-1){
+	// to check files were empty
+	if(ind==-1){
 		printf("No data to process\n");
 		return 0;
 	}
+	
+	// condition to handle -l value exceeding the entry values
 	if(lval>ind+1){
 		lval=ind+1;;
 		
 	}
+	
+	// printing newline before graph
 	if(lval>0){
 		printf("\n");
 	}
 	
+	// sorting array acccording to given flags
 	if(tval==1){
 		sortTime();
 		time();
@@ -185,25 +188,10 @@ int main(int argc, char **argv)
 	}
 	
 	
-	
-	
-	
-	//printAll();
-	//printf("%d\n",ind);
-	//printf("%d\n", maxLen(5));
-	//printf("%d\n", numLen(12364));
     return 0;
 }
 
-int printAll(){
-    for(int i=0; i<ind+1; i++){
-        printf("name->%s participants->%d minutes->%d meetings->%d\n",data[i].name,data[i].participants, data[i].minutes, data[i].meetings);
-    }
-    printf("\n");
-    return 0;
-    
-}
-
+// function to convert time in HH:MM:SS to minutes
 int timeSeconds(char str[10]){
 	
 	int i = 0;
@@ -220,8 +208,7 @@ int timeSeconds(char str[10]){
 	
 }
 
-
-
+// function to see occurence of the elemnt
 void search(char str[30], int index){
 	for (int i =(index+1); i< ind+1;i++){ // search for whole array excluding index val
 		
@@ -239,7 +226,7 @@ void search(char str[30], int index){
 	
 }
 
-
+// function to delete entry
 void deleteEntry(int pos){
 	for(int i=pos; i<ind; i++){
             data[i] = data[i + 1];
@@ -248,15 +235,15 @@ void deleteEntry(int pos){
 	
 }
 
+// function to convert secondss to minutes
 void secToMin(){
-	//for (int i=0;i<ind+1;i++){
 		data[ind].minutes = data[ind].seconds/60;
-	//}
 }
 
+// funcction to sort array according to time
 void sortTime(){
     
-    data_t tempVal; // variable to gandle function
+    data_t tempVal; // variable to handle function
     for(int index1=0; index1<ind+1; index1++){
         for(int index2=index1+1; index2<ind+1; index2++){
             if(data[index1].minutes<data[index2].minutes){
@@ -272,9 +259,10 @@ void sortTime(){
 	
 }
 
+// function to sort array according to meeting count
 void sortMeetings(){
     
-    data_t tempVal; // variable to gandle function
+    data_t tempVal; // variable to handle function
     for(int index1=0; index1<ind+1; index1++){
         for(int index2=index1+1; index2<ind+1; index2++){
             if(data[index1].meetings<data[index2].meetings){
@@ -290,9 +278,10 @@ void sortMeetings(){
 	
 }
 
+// function to sort array accordding to participants count
 void sortParticipants(){
     
-    data_t tempVal; // variable to gandle function
+    data_t tempVal; // variable to handle function
     for(int index1=0; index1<ind+1; index1++){
         for(int index2=index1+1; index2<ind+1; index2++){
             if(data[index1].participants<data[index2].participants){
@@ -308,6 +297,7 @@ void sortParticipants(){
 	
 }
 
+// function to calculate maximum length of the name
 int maxLen(int limit){
 	int val = 0;
 	for(int i=0; i<limit;i++){
@@ -319,6 +309,7 @@ int maxLen(int limit){
 	return val;
 }
 
+// function to calculate how many digits in the number
 long int numLen(int n) {
   
   int count = 0;
@@ -334,15 +325,17 @@ long int numLen(int n) {
   return count;
 }
 
+// function to read files
 void fileRead(char *str){
 	FILE* fp = fopen(str, "r");
   
-    if (!fp)
+    if (!fp){
+		// if program connot open give file
         printf("Cannot open one or more given files\n");
-  
+		exit (0);
+	}
     else {
-		//arrayCount++;
-        // Here we have taken size of
+
         // array 1024 you can modify it
         char str[1024];
   
@@ -357,10 +350,12 @@ void fileRead(char *str){
             char* value = strtok(str, ",");
 			ind++;
 			if(ind>0){
+				// memory reallocations
 				data = realloc(data, (ind+1)*sizeof(data_t));
 				
 			}else{
-				data = (data_t*)malloc(sizeof(data_t));
+				// initial dynamic memory allocation
+				data = (data_t*)malloc(sizeof(data_t)); 
 			}
             while (value) {
                 // Column 1
@@ -390,6 +385,7 @@ void fileRead(char *str){
 			secToMin();
 			for(int i=0;i<ind+1;i++){
 				search(data[i].name, i);
+				
 			}
   
         }
@@ -400,6 +396,7 @@ void fileRead(char *str){
 	
 }
 
+// special function to calculate length of string 
 long int strLen(char * str){
 	if (str[0] == '-'){
 		return strlen(str)-1;
@@ -409,30 +406,19 @@ long int strLen(char * str){
 	
 }
 
-void stringLwr(char *s)
-{
-    int i=0;
-    while(s[i]!='\0')
-    {
-        if(s[i]>='A' && s[i]<='Z'){
-            s[i]=s[i]+32;
-        }
-        ++i;
-    }
-}
-
+// function to print a single bar
 void print(int lim, int val,int ind){
 	float squares ;
 	int s= sum();
-	//squares = printarea * val / s; // for non scaled mode
-	if(scale==1){
+	
+	if(scale==1){ // scaled mode
 		if(ind==0){
-			squares = printarea;
+			squares = printarea; // initial bar
 		}
-		else{
-			squares = (float)val/pfactor;
+		else{ 
+			squares = (float)val/pfactor; // other bars
 		}
-	}else{
+	}else{// non scaled mode
 		 
 		squares = (float)printarea * (float)val / (float)s;
 	}
@@ -465,10 +451,9 @@ void print(int lim, int val,int ind){
 	printf("\n");
 	
 	
-	
-	
 }
 
+// function to print the final line of the graph
 void printFinalLine(int maxlen){
 	printSpaces(maxlen);
 	printf("\u2514");
@@ -478,6 +463,8 @@ void printFinalLine(int maxlen){
 	}
 	printf("\n");
 }
+
+// function to print initial spaces in the graph
 void printSpaces(int maxlen){
 	for (int i=0; i<maxlen+2; i++){
 		printf(" ");
@@ -485,6 +472,7 @@ void printSpaces(int maxlen){
 	}
 }
 
+// function to print square patterns in the graph
 void printSquares(int squares){
 	for (int i=0; i<squares; i++){
 		printf("\u2591");
@@ -493,6 +481,7 @@ void printSquares(int squares){
 	
 }
 
+// getting sum of all elements in specific kind
 int sum(){
 	int sum=0;
 	for (int i=0; i<ind+1; i++){
@@ -509,7 +498,9 @@ int sum(){
 	return sum;
 }
 
+// to handle preprocesses before printing meeting count
 void meetings(){
+	// calculating maxlen maxdig values
 	for (int i=0; i<lval; i++){
 		if(strlen(data[i].name)>maxlen){
 			maxlen = strlen(data[i].name);
@@ -520,7 +511,8 @@ void meetings(){
 		
 		
 	}
-	printarea = 80-maxlen - 3 -maxdig; // find maxlen,maxdig
+	// calculating useful value
+	printarea = 80-maxlen - 3 -maxdig; 
 	pfactor = (float)data[0].meetings/(float)printarea;
 	
 	for (int i=0; i<lval; i++){
@@ -532,7 +524,9 @@ void meetings(){
 	
 }
 
+// to handle preprocesses before printing participants count
 void participants(){
+	// calculating maxlen maxdig values
 	for (int i=0; i<lval; i++){
 		if(strlen(data[i].name)>maxlen){
 			maxlen = strlen(data[i].name);
@@ -543,7 +537,8 @@ void participants(){
 		
 		
 	}
-	printarea = 80-maxlen - 3 -maxdig; // find maxlen,maxdig
+	// calculating useful value 
+	printarea = 80-maxlen - 3 -maxdig; 
 	pfactor = (float)data[0].participants/(float)printarea;
 	
 	for (int i=0; i<lval; i++){
@@ -554,7 +549,9 @@ void participants(){
 	}
 }
 
+// to handle preprocesses before printing meeting time
 void time(){
+	// calculating maxlen maxdig values
 	for (int i=0; i<lval; i++){
 		if(strlen(data[i].name)>maxlen){
 			maxlen = strlen(data[i].name);
@@ -565,7 +562,8 @@ void time(){
 		
 		
 	}
-	printarea = 80-maxlen - 3 -maxdig; // find maxlen,maxdig
+	// calculating useful value
+	printarea = 80-maxlen - 3 -maxdig; 
 	pfactor = (float)data[0].minutes/(float)printarea;
 	
 	for (int i=0; i<lval; i++){
@@ -575,8 +573,9 @@ void time(){
 		printFinalLine(maxlen);
 	}
 }
-int isNumber(char s[])
-{
+
+// funcction to check that geven string is Number or not
+int isNumber(char s[]){
     for (int i = 1; s[i]!= '\0'; i++)
     {
         if (isdigit(s[i]) == 0)
