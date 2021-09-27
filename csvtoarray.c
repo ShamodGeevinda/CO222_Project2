@@ -157,9 +157,13 @@ int main(int argc, char **argv){
 		
 	}
 	
-	
+	if(filenameIndex==-1){
+		printf("No input files were given\n");
+		printf("usage: %s [-l length] [-m | -t | -p] [--scaled] filename1 filename2 ..\n",argv[0]);
+		return 0;
+	}
 	// to check files were empty
-	if(ind==-1){
+	if(ind==-1 && filenameIndex>-1){
 		printf("No data to process\n");
 		return 0;
 	}
