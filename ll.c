@@ -1,6 +1,6 @@
 // C implementation of functional bar graph
 
-//includong headers
+//including header files
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -187,26 +187,14 @@ int main(int argc, char **argv){
 		printf("\n");
 	}
 	
-	// sorting array acccording to given flags
-	if(tval==1){
-		sortTime();
-		time();
-	}else if(pval==1){
-		sortParticipants();
-		participants();
-	}else{
-		//sortMeetings();
+	
+	reverse(&head);
+	// sorting array acccording to given flags	
+	sort();
 		//printAll();
-		reverse(&head);
-		sort();
-		//bubbleSort();
-		//deleteRecord();
-		//removeDuplicates();
-		//printf("%d\n",ind);
-		printAll();
-		meetings();
+	meetings();
 		//meetings();
-	}
+	
 	
 	
     return 0;
@@ -226,64 +214,6 @@ int timeSeconds(char str[10]){
         p = strtok (NULL, ":");
     }
 	return  /*atoi(array[2])+*/(atoi(array[1])*60)+(atoi(array[0])*3600);
-	
-}
-
-
-// funcction to sort array according to time
-void sortTime(){
-    
-    data_t tempVal; // variable to handle function
-    for(int index1=0; index1<ind+1; index1++){
-        for(int index2=index1+1; index2<ind+1; index2++){
-            if(data[index1].minutes<data[index2].minutes){
-                tempVal = data[index1];
-                data[index1]= data[index2];
-                data[index2]= tempVal;
-                
-            }
-            
-        }
-        
-    }
-	
-}
-
-// function to sort array according to meeting count
-void sortMeetings(){
-    
-    data_t tempVal; // variable to handle function
-    for(int index1=0; index1<ind+1; index1++){
-        for(int index2=index1+1; index2<ind+1; index2++){
-            if(data[index1].meetings<data[index2].meetings){
-                tempVal = data[index1];
-                data[index1]= data[index2];
-                data[index2]= tempVal;
-                
-            }
-            
-        }
-        
-    }
-	
-}
-
-// function to sort array accordding to participants count
-void sortParticipants(){
-    
-    data_t tempVal; // variable to handle function
-    for(int index1=0; index1<ind+1; index1++){
-        for(int index2=index1+1; index2<ind+1; index2++){
-            if(data[index1].participants<data[index2].participants){
-                tempVal = data[index1];
-                data[index1]= data[index2];
-                data[index2]= tempVal;
-                
-            }
-            
-        }
-        
-    }
 	
 }
 
@@ -498,85 +428,51 @@ void meetings(){
 		if(strlen(current->name)>maxlen){
 			maxlen = strlen(current->name);
 		}
-		if(numLen(current->meetings)>maxdig){
+		if(pval){
+			if(numLen(current->participants)>maxdig){
+			maxdig = numLen(current->participants);
+		}
+		}else if(tval){
+			if(numLen(current->minutes)>maxdig){
+			maxdig = numLen(current->minutes);
+		}
+		}else{
+			if(numLen(current->meetings)>maxdig){
 			maxdig = numLen(current->meetings);
+		}
 		}
 		current=current->next;
 		
 		
 	}}
 	
-	printf("%d\n", maxlen);
-		printf("%d\n",maxdig);
-		
 	// calculating useful value
 	printarea = 80-maxlen - 3 -maxdig; 
-	pfactor = (float)(head->meetings)/(float)printarea;
+	if(pval){
+		pfactor = (float)(head->participants)/(float)printarea;
+	}else if(tval){
+		pfactor = (float)(head->minutes)/(float)printarea;
+	}else{
+		pfactor = (float)(head->meetings)/(float)printarea;
+	}
 	
-	printf("%d\n", printarea);
-		printf("%f\n", pfactor);
 	data_t* current = head;
 	for (int i=0; i<lval; i++){
 		int a = strlen(current->name);
-		
-		print(a,current->meetings,i,current->name);
-		
+		if(pval){
+			print(a,current->participants,i,current->name);
+		}else if(tval){
+			print(a,current->minutes,i,current->name);
+		}else{
+			print(a,current->meetings,i,current->name);
+		}
 		current= current->next;
 	}
+	
 	if (lval>0){
 		printFinalLine(maxlen);
 	}
 	
-}
-
-// to handle preprocesses before printing participants count
-void participants(){
-	// calculating maxlen maxdig values
-	for (int i=0; i<lval; i++){
-		if(strlen(data[i].name)>maxlen){
-			maxlen = strlen(data[i].name);
-		}
-		if(numLen(data[i].participants)>maxdig){
-			maxdig = numLen(data[i].participants);
-		}
-		
-		
-	}
-	// calculating useful value 
-	printarea = 80-maxlen - 3 -maxdig; 
-	pfactor = (float)data[0].participants/(float)printarea;
-	
-	for (int i=0; i<lval; i++){
-		print(lval,data[i].participants,i,"hff");
-	}
-	if (lval>0){
-		printFinalLine(maxlen);
-	}
-}
-
-// to handle preprocesses before printing meeting time
-void time(){
-	// calculating maxlen maxdig values
-	for (int i=0; i<lval; i++){
-		if(strlen(data[i].name)>maxlen){
-			maxlen = strlen(data[i].name);
-		}
-		if(numLen(data[i].minutes)>maxdig){
-			maxdig = numLen(data[i].minutes);
-		}
-		
-		
-	}
-	// calculating useful value
-	printarea = 80-maxlen - 3 -maxdig; 
-	pfactor = (float)data[0].minutes/(float)printarea;
-	
-	for (int i=0; i<lval; i++){
-		print(lval,data[i].minutes,i,"hff");
-	}
-	if (lval>0){
-		printFinalLine(maxlen);
-	}
 }
 
 // funcction to check that geven string is Number or not
@@ -588,7 +484,6 @@ int isNumber(char s[]){
     }
     return 1;
 }
-
 
 void sort() {
 
@@ -608,19 +503,36 @@ void sort() {
 		
       for ( j = 1 ; j < k ; j++ ) {   
 
-         if ( current->meetings < next->meetings ) {
-            meet = current->meetings;
-            current->meetings = next->meetings;
-            next->meetings = meet;
+         if (pval && current->participants < next->participants ) {
+		
+				meet = current->participants;
+				current->participants = next->participants;
+				next->participants = meet;
+				
+				strcpy(tempname , current->name);
+				strcpy(current->name , next->name);
+				strcpy(next->name , tempname);
 			
-			strcpy(tempname , current->name);
-            strcpy(current->name , next->name);
-            strcpy(next->name , tempname);
+		 }else if(tval && current->minutes < next->minutes){
+				meet = current->minutes;
+				current->minutes = next->minutes;
+				next->minutes = meet;
+				
+				strcpy(tempname , current->name);
+				strcpy(current->name , next->name);
+				strcpy(next->name , tempname);
+				
+		 }else if(!pval && !tval && current->meetings < next->meetings ){
+				meet = current->meetings;
+				current->meetings = next->meetings;
+				next->meetings = meet;
+			
+				strcpy(tempname , current->name);
+				strcpy(current->name , next->name);
+				strcpy(next->name , tempname);
 
-            /*tempKey = current->key;
-            current->key = next->key;
-            next->key = tempKey;*/
-         }
+         }else{}
+		 
 			
          current = current->next;
          next = next->next;
