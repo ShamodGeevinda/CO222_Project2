@@ -20,7 +20,7 @@ long int numLen(int n);
 void fileRead(char *);
 long int strLen(char *);
 void stringLwr(char *);
-void print(int lim, int val, int ind);
+void print(int val, int ind);
 void printFinalLine(int maxlen);
 void printSpaces(int maxlen);
 void printSquares(int squares);
@@ -31,6 +31,7 @@ void participants();
 int isNumber(char s[]);
 void sort();
 void printAll();
+void bubbleSort();
 
 
 // structure to store data
@@ -44,9 +45,10 @@ typedef struct _ {
 	struct _ * next;
 }data_t;
 
+static void reverse(data_t** head_ref);
 int deleteRecord();
 void removeDuplicates(data_t*);
-
+void swap(data_t *a, data_t *b);
 // global variables
 data_t* data ;
 int ind = -1;
@@ -194,9 +196,13 @@ int main(int argc, char **argv){
 		participants();
 	}else{
 		//sortMeetings();
-		//sort();
+		//printAll();
+		reverse(&head);
+		sort();
+		//bubbleSort();
 		//deleteRecord();
 		//removeDuplicates();
+		//printf("%d\n",ind);
 		printAll();
 		//meetings();
 	}
@@ -389,7 +395,7 @@ long int strLen(char * str){
 }
 
 // function to print a single bar
-void print(int lim, int val,int ind){
+void print(int val,int ind){
 	float squares ;
 	int s= sum();
 	
@@ -572,67 +578,33 @@ int isNumber(char s[]){
     return 1;
 }
 
-// function to delete student record
-int deleteRecord(){
-    
-    // start with first link
-    data_t *current = head;
-    data_t *previous = NULL;
-    
-    // goingh through the list
-    while (current!=NULL){ 
-        // if the current node is the last node
-        if (current->next!=NULL && !(strcmp( current->name, current->next->name))){
-            current->meetings=current->meetings+1;
-			current->participants = current->participants+ current->next->participants;
-			current->seconds =current->seconds + current->next->seconds;
-			current->minutes =current->minutes + current->next->minutes;
-			// store the address to current link address
-            previous= current;
-            // going to the next link
-            current= current->next->next;
-			//return 0;
-        }else{
-            // store the address to current link address
-            previous= current;
-            // going to the next link
-            current= current->next;
-        }
-    }
-    
-    // updating the link
-    if(current == head){
-        // changing first point to next link
-        head = head->next;
-        
-    }else{
-        // bypass the current link
-        previous->next = current ->next;
-    }
-    
-    
-    return 0;
-  
-}
+
 void sort() {
 
-   int i, j, k, tempKey, tempData;
+   int i, j, k;
+   //data_t * temp;
    data_t *current;
    data_t *next;
+   char tempname[30];
+   int meet;
 	
    
-   k = ind ;
-	int size = k;
-   for ( i = 0 ; i < size - 1 ; i++, k-- ) {
+   int size = ind+1 ;
+	k=size;
+   for ( i = 0 ; i < size-1 ; i++, k-- ) {
       current = head;
       next = head->next;
 		
       for ( j = 1 ; j < k ; j++ ) {   
 
-         if ( current->meetings > next->meetings ) {
-            tempData = current->meetings;
+         if ( current->meetings < next->meetings ) {
+            meet = current->meetings;
             current->meetings = next->meetings;
-            next->meetings = tempData;
+            next->meetings = meet;
+			
+			strcpy(tempname , current->name);
+            strcpy(current->name , next->name);
+            strcpy(next->name , tempname);
 
             /*tempKey = current->key;
             current->key = next->key;
@@ -658,8 +630,8 @@ void printAll(){
     printf("\n");
     
 }
-void removeDuplicates(data_t* element)
-{
+
+void removeDuplicates(data_t* element){
     /* Pointer to traverse the linked list */
     data_t* now = head;
  
@@ -685,10 +657,30 @@ void removeDuplicates(data_t* element)
            next_next = now->next->next;
            free(now->next);
            now->next = next_next; 
+		   ind--;
        }
        else /* This is tricky: only advance if no deletion */
        {
           now = now->next;
        }
     }
+}
+
+/* Function to reverse the linked list */
+static void reverse(data_t** head_ref){
+    data_t* prev = NULL;
+    data_t* current = *head_ref;
+    data_t* next = NULL;
+    while (current != NULL) {
+        // Store next
+        next = current->next;
+ 
+        // Reverse current node's pointer
+        current->next = prev;
+ 
+        // Move pointers one position ahead.
+        prev = current;
+        current = next;
+    }
+    *head_ref = prev;
 }
