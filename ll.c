@@ -20,7 +20,7 @@ long int numLen(int n);
 void fileRead(char *);
 long int strLen(char *);
 void stringLwr(char *);
-void print(int val, int ind);
+void print(int a,int val, int ind, char* str);
 void printFinalLine(int maxlen);
 void printSpaces(int maxlen);
 void printSquares(int squares);
@@ -204,6 +204,7 @@ int main(int argc, char **argv){
 		//removeDuplicates();
 		//printf("%d\n",ind);
 		printAll();
+		meetings();
 		//meetings();
 	}
 	
@@ -395,7 +396,7 @@ long int strLen(char * str){
 }
 
 // function to print a single bar
-void print(int val,int ind){
+void print(int a,int val,int ind, char* str){
 	float squares ;
 	int s= sum();
 	
@@ -418,8 +419,8 @@ void print(int val,int ind){
 	printf("\n");
 	
 	//line 2
-	printf(" %s",data[ind].name);
-	for (int i=0; i<maxlen+1-strlen(data[ind].name); i++){
+	printf(" %s",str);
+	for (int i=0; i<maxlen+1-a; i++){
 		printf(" ");
 	}printf("\u2502");
 	
@@ -502,14 +503,24 @@ void meetings(){
 		}
 		current=current->next;
 		
+		
 	}}
+	
+	printf("%d\n", maxlen);
+		printf("%d\n",maxdig);
+		
 	// calculating useful value
 	printarea = 80-maxlen - 3 -maxdig; 
 	pfactor = (float)(head->meetings)/(float)printarea;
 	
+	printf("%d\n", printarea);
+		printf("%f\n", pfactor);
 	data_t* current = head;
 	for (int i=0; i<lval; i++){
-		print(lval,current->meetings,i);
+		int a = strlen(current->name);
+		
+		print(a,current->meetings,i,current->name);
+		
 		current= current->next;
 	}
 	if (lval>0){
@@ -536,7 +547,7 @@ void participants(){
 	pfactor = (float)data[0].participants/(float)printarea;
 	
 	for (int i=0; i<lval; i++){
-		print(lval,data[i].participants,i);
+		print(lval,data[i].participants,i,"hff");
 	}
 	if (lval>0){
 		printFinalLine(maxlen);
@@ -561,7 +572,7 @@ void time(){
 	pfactor = (float)data[0].minutes/(float)printarea;
 	
 	for (int i=0; i<lval; i++){
-		print(lval,data[i].minutes,i);
+		print(lval,data[i].minutes,i,"hff");
 	}
 	if (lval>0){
 		printFinalLine(maxlen);
