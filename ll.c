@@ -37,6 +37,7 @@ void bubbleSort();
 static void reverse(data_t** head_ref);
 void removeDuplicates(data_t*);
 void swap(data_t *a, data_t *b);
+int factor();
 
 // global variables
 data_t* data ;
@@ -314,10 +315,10 @@ void print(int a,int val,int ind, char* str){
 	
 	if(scale==1){ // scaled mode
 		if(ind==0){
-			squares = printarea; // initial bar
+			squares = printarea; // initial bar lengths
 		}
 		else{ 
-			squares = (float)val/pfactor; // other bars
+			squares = (float)val/factor(); // other bar lengths
 		}
 	}else{// non scaled mode
 		 
@@ -350,8 +351,7 @@ void print(int a,int val,int ind, char* str){
 	printSpaces(maxlen);
 	printf("\u2502");
 	printf("\n");
-	
-	
+		
 }
 
 // function to print the final line of the graph
@@ -410,43 +410,37 @@ void graph(){
 		if(strlen(current->name)>maxlen){
 			maxlen = strlen(current->name);
 		}
+		
 		if(pval){
 			if(numLen(current->participants)>maxdig){
 			maxdig = numLen(current->participants);
-		}
+			}
 		}else if(tval){
 			if(numLen(current->minutes)>maxdig){
 			maxdig = numLen(current->minutes);
-		}
+			}
 		}else{
 			if(numLen(current->meetings)>maxdig){
 			maxdig = numLen(current->meetings);
-		}
+			}
 		}
 		current=current->next;
-		
-		
-	}}
+
+	}
+}
 	
 	// calculating useful value
 	printarea = 80-maxlen - 3 -maxdig; 
-	if(pval){
-		pfactor = (float)(head->participants)/(float)printarea;
-	}else if(tval){
-		pfactor = (float)(head->minutes)/(float)printarea;
-	}else{
-		pfactor = (float)(head->meetings)/(float)printarea;
-	}
 	
 	data_t* current = head;
 	for (int i=0; i<lval; i++){
-		int a = strlen(current->name);
+		int len = strlen(current->name);
 		if(pval){
-			print(a,current->participants,i,current->name);
+			print(len,current->participants,i,current->name);
 		}else if(tval){
-			print(a,current->minutes,i,current->name);
+			print(len,current->minutes,i,current->name);
 		}else{
-			print(a,current->meetings,i,current->name);
+			print(len,current->meetings,i,current->name);
 		}
 		current= current->next;
 	}
@@ -471,15 +465,13 @@ int isNumber(char s[]){
 void sort() {
 
    int i, j, k;
-   //data_t * temp;
    data_t *current;
    data_t *next;
    char tempname[50];
    int meet;
-	
-   
    int size = ind+1 ;
 	k=size;
+	
    for ( i = 0 ; i < size-1 ; i++, k-- ) {
       current = head;
       next = head->next;
@@ -487,7 +479,7 @@ void sort() {
       for ( j = 1 ; j < k ; j++ ) {   
 
          if (pval && current->participants < next->participants ) {
-		
+				// only take care about participants number and names
 				meet = current->participants;
 				current->participants = next->participants;
 				next->participants = meet;
@@ -497,6 +489,7 @@ void sort() {
 				strcpy(next->name , tempname);
 			
 		 }else if(tval && current->minutes < next->minutes){
+				// only take care about total of minutes and names
 				meet = current->minutes;
 				current->minutes = next->minutes;
 				next->minutes = meet;
@@ -506,6 +499,7 @@ void sort() {
 				strcpy(next->name , tempname);
 				
 		 }else if(!pval && !tval && current->meetings < next->meetings ){
+				// only take care about meeting count and names
 				meet = current->meetings;
 				current->meetings = next->meetings;
 				next->meetings = meet;
@@ -515,7 +509,6 @@ void sort() {
 				strcpy(next->name , tempname);
 
          }else{}
-		 
 			
          current = current->next;
          next = next->next;
@@ -581,13 +574,23 @@ static void reverse(data_t** head_ref){
     while (current != NULL) {
         // Store next
         next = current->next;
- 
         // Reverse current node's pointer
         current->next = prev;
- 
         // Move pointers one position ahead.
         prev = current;
         current = next;
     }
     *head_ref = prev;
+}
+
+// function to calculating printing factor
+int factor(){
+	if(pval){
+		pfactor = (float)(head->participants)/(float)printarea;
+	}else if(tval){
+		pfactor = (float)(head->minutes)/(float)printarea;
+	}else{
+		pfactor = (float)(head->meetings)/(float)printarea;
+	}
+	return pfactor;
 }
