@@ -6,15 +6,19 @@
 #include <string.h>
 #include <ctype.h>
  
+// structure to store data
+typedef struct _ {
+	int participants;
+	int seconds;
+	int minutes;
+	int meetings;
+	char name[50];
+	char time[10];
+	struct _ * next;
+}data_t;
 
 // prototyping functions
 int timeSeconds(char str[10]); 
-void deleteEntry(int pos);
-void search(char str[30], int index);
-
-void sortTime();
-void sortMeetings();
-void sortParticipants();
 int maxLen(int limit);
 long int numLen(int n);
 void fileRead(char *);
@@ -25,30 +29,15 @@ void printFinalLine(int maxlen);
 void printSpaces(int maxlen);
 void printSquares(int squares);
 int sum();
-void meetings();
-void time();;
-void participants();
+void graph();
 int isNumber(char s[]);
 void sort();
 void printAll();
 void bubbleSort();
-
-
-// structure to store data
-typedef struct _ {
-	int participants;
-	int seconds;
-	int minutes;
-	int meetings;
-	char name[30];
-	char time[10];
-	struct _ * next;
-}data_t;
-
 static void reverse(data_t** head_ref);
-int deleteRecord();
 void removeDuplicates(data_t*);
 void swap(data_t *a, data_t *b);
+
 // global variables
 data_t* data ;
 int ind = -1;
@@ -58,7 +47,7 @@ int tval =0;
 int lval = 10;
 int scale =0;
 int filenameIndex = -1;
-char filenames[100][100];
+char filenames[1000][100];
 int printarea;
 float pfactor;
 int maxlen=0;
@@ -66,13 +55,13 @@ int maxdig=0;
 data_t *head = NULL;
 data_t *current = NULL;
 
-//char csvarray[2][50];
 
 int main(int argc, char **argv){
+	
 	// argument handeling
 	if(argc==1){ // if there isn't any input file
 		printf("No input files were given\n");
-		printf("usage: ./samplev1 [-l length] [-m | -t | -p] [--scaled] filename1 filename2 ..\n");
+		printf("usage: %s [-l length] [-m | -t | -p] [--scaled] filename1 filename2 ..\n",argv[0]);
 		return 0;
 	}
 	
@@ -99,12 +88,12 @@ int main(int argc, char **argv){
 					
 					if(argv[i+1][0]=='-' && isNumber(argv[i+1])){
 						printf("Invalid option(negative) for [-l]\n");
-						printf("usage: ./samplev1 [-l length] [-m | -t | -p] [--scaled] filename1 filename2 ..\n");
+						printf("usage: %s [-l length] [-m | -t | -p] [--scaled] filename1 filename2 ..\n",argv[0]);
 						return 0;
 						}
 					else if(argv[i+1][0]=='-' && !isNumber(argv[i+1])){
 						printf("Invalid options for [-l]\n");
-						printf("usage: ./samplev1 [-l length] [-m | -t | -p] [--scaled] filename1 filename2 ..\n");	
+						printf("usage: %s [-l length] [-m | -t | -p] [--scaled] filename1 filename2 ..\n",argv[0]);	
 						return 0;
 						
 					}else{
@@ -114,24 +103,24 @@ int main(int argc, char **argv){
 					
 				}else{
 					printf("Invalid options for [-l]\n");
-					printf("usage: ./samplev1 [-l length] [-m | -t | -p] [--scaled] filename1 filename2 ..\n");	
+					printf("usage: %s [-l length] [-m | -t | -p] [--scaled] filename1 filename2 ..\n",argv[0]);	
 					return 0;
 				}
 				
 			}else{
 				printf("Not enough options for [-l]\n");
-				printf("usage: ./samplev1 [-l length] [-m | -t | -p] [--scaled] filename1 filename2 ..\n");
+				printf("usage: %s [-l length] [-m | -t | -p] [--scaled] filename1 filename2 ..\n",argv[0]);
 				return 0;
 			}
 			
 		}
 		else if( argv[i][0]=='-' && ( strcmp(argv[i],"-m") && strcmp(argv[i],"-p") && strcmp(argv[i],"-t") && strcmp(argv[i],"-l") && strcmp(argv[i],"--scaled") )){
 			printf("Invalid option [%s]\n",argv[i]);
-			printf("usage: ./samplev1 [-l length] [-m | -t | -p] [--scaled] filename1 filename2 ..\n");
+			printf("usage: %s [-l length] [-m | -t | -p] [--scaled] filename1 filename2 ..\n",argv[0]);
 			return 0;
 		}
 		else{
-			// making array with filenames
+			// making array with filenames (everything which won't flag)
 			filenameIndex++;
 			strcpy(filenames[filenameIndex],argv[i]);
 			
@@ -155,7 +144,7 @@ int main(int argc, char **argv){
 	// condition to check for multiple options
 	if(mval+tval+pval>1){
 		printf("Cannot plot multiple parameters in same graph.\n");
-		printf("usage: ./samplev1 [-l length] [-m | -t | -p] [--scaled] filename1 filename2 ..\n");
+		printf("usage: %s [-l length] [-m | -t | -p] [--scaled] filename1 filename2 ..\n",argv[0]);
 		return 0;
 	}
 	
@@ -170,6 +159,7 @@ int main(int argc, char **argv){
 		printf("usage: %s [-l length] [-m | -t | -p] [--scaled] filename1 filename2 ..\n",argv[0]);
 		return 0;
 	}
+	
 	// to check files were empty
 	if(ind==-1 && filenameIndex>-1){
 		printf("No data to process\n");
@@ -189,11 +179,11 @@ int main(int argc, char **argv){
 	
 	
 	reverse(&head);
-	// sorting array acccording to given flags	
+		
 	sort();
-		//printAll();
-	meetings();
-		//meetings();
+	
+	graph();
+	//meetings();
 	
 	
 	
@@ -214,7 +204,7 @@ int timeSeconds(char str[10]){
         p = strtok (NULL, ":");
     }
 	return  /*atoi(array[2])+*/(atoi(array[1])*60)+(atoi(array[0])*3600);
-	
+	// see that the sample program won't care about summation of seconds
 }
 
 // function to calculate maximum length of the name
@@ -234,9 +224,6 @@ long int numLen(int n) {
   
   int count = 0;
  
-  // iterate at least once, then until n becomes 0
-  // remove last digit from n in each iteration
-  // increase count by 1 in each iteration
   do {
     n /= 10;
     ++count;
@@ -256,7 +243,7 @@ void fileRead(char *str){
 	}
     else {
 
-        // array 1024 you can modify it
+        // array 1024 ( can modify )
         char str[1024];
   
         int row = 0;
@@ -273,16 +260,15 @@ void fileRead(char *str){
 			data_t *add = (data_t*)malloc(sizeof(data_t));
 			
             while (value) {
-                // Column 1
 				
+                // Column 1
                 if (column == 0) {
-					strcpy(add->name,value); // stpcpy was
+					strcpy(add->name,value); 
 
                 }
   
                 // Column 2
                 if (column == 1) {
-				   //strcpy(data[ind].participants,value);
 				   add->participants = atoi(value);
                 }
   
@@ -299,14 +285,10 @@ void fileRead(char *str){
 			
 			add->minutes = (add->seconds)/60;
 			
-			//deleteRecord(*add);
-			
 			add->next = head;
 			head= add;
 			removeDuplicates(add);
-			
-			
-  
+
         }
   
         // Close the file
@@ -420,7 +402,7 @@ int sum(){
 }
 
 // to handle preprocesses before printing meeting count
-void meetings(){
+void graph(){
 	// calculating maxlen maxdig values
 	{
 	data_t* current = head;
@@ -485,13 +467,14 @@ int isNumber(char s[]){
     return 1;
 }
 
+// function to sort 
 void sort() {
 
    int i, j, k;
    //data_t * temp;
    data_t *current;
    data_t *next;
-   char tempname[30];
+   char tempname[50];
    int meet;
 	
    
@@ -540,6 +523,7 @@ void sort() {
    }   
 }
 
+// function to check program without printing graph (not used in final program)
 void printAll(){
     // starting from first link
     data_t *ptr = head;
@@ -554,42 +538,42 @@ void printAll(){
     
 }
 
+// function to remove same name entries
 void removeDuplicates(data_t* element){
-    /* Pointer to traverse the linked list */
+    // Pointer to traverse the linked list 
     data_t* now = head;
  
-    /* Pointer to store the next pointer of a node to be deleted*/
+    // Pointer to store the next pointer of a node to be deleted
     data_t* next_next;
    
-    /* do nothing if the list is empty */
+    // do nothing if the list is empty 
     if (now == NULL)
        return ;
  
-    /* Traverse the list till last node */
+    // Traverse the list till last node 
     while (now->next != NULL)
     {
-       /* Compare current node with next node */
+       // Compare current node with next node 
        if (!strcmp((element->name) , (now->next->name)))
        {
-		   //printf("found");
 		   element->meetings=now->next->meetings+1;
 		   element->participants = now->next->participants+ element->participants;
-			element->seconds =now->next->seconds + element->seconds;
-			element->minutes =now->next->minutes + element->minutes;
-           /* The sequence of steps is important*/              
+		   element->seconds =now->next->seconds + element->seconds;
+		   element->minutes =now->next->minutes + element->minutes;
+                        
            next_next = now->next->next;
            free(now->next);
            now->next = next_next; 
 		   ind--;
        }
-       else /* This is tricky: only advance if no deletion */
+       else //if no deletion 
        {
           now = now->next;
        }
     }
 }
 
-/* Function to reverse the linked list */
+// Function to reverse the linked list 
 static void reverse(data_t** head_ref){
     data_t* prev = NULL;
     data_t* current = *head_ref;
