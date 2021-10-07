@@ -31,7 +31,7 @@ void printAll();
 static void reverse(data_t** head_ref);
 void removeDuplicates(data_t*);
 void swap(data_t *a, data_t *b);
-int factor();
+float factor();
 
 // global variables
 data_t* data ;
@@ -327,6 +327,7 @@ void print(int a,int val,int ind, char* str){
 	printf("\u2502");
 	printSquares(squares);
 	printf("%d", val);
+	//printf(" %d", pfacor);
 	printf("\n");
 	
 	//line 3
@@ -388,9 +389,9 @@ void graph(){
 		if(strlen(current->name)>maxlen){
 			maxlen = strlen(current->name);
 		}
-			if(numLen(current->all)>maxdig){
-				maxdig = numLen(current->all);
-			}
+		if(numLen(current->all)>maxdig){
+			maxdig = numLen(current->all);
+		}
 		current=current->next;
 	}
 }
@@ -502,7 +503,7 @@ static void reverse(data_t** head_ref){
 }
 
 // function to calculating printing factor
-int factor(){
+float factor(){
 	pfactor = (float)(head->all)/(float)printarea;
 	return pfactor;
 }
