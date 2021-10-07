@@ -8,12 +8,8 @@
  
 // structure to store data
 typedef struct _ {
-	int participants;
-	int seconds;
-	int minutes;
-	int meetings;
+	int all;
 	char name[50];
-	char time[10];
 	struct _ * next;
 }data_t;
 
@@ -23,17 +19,15 @@ int maxLen(int limit);
 long int numLen(int n);
 int fileRead(char *);
 long int strLen(char *);
-void stringLwr(char *);
 void print(int a,int val, int ind, char* str);
 void printFinalLine(int maxlen);
 void printSpaces(int maxlen);
 void printSquares(int squares);
-int sum();
+long long int sum();
 void graph();
 int isNumber(char s[]);
 void sort();
 void printAll();
-void bubbleSort();
 static void reverse(data_t** head_ref);
 void removeDuplicates(data_t*);
 void swap(data_t *a, data_t *b);
@@ -133,7 +127,7 @@ int main(int argc, char **argv){
 	// going through the filenaame array
 	for (int i=0; i<filenameIndex+1; i++){
 		
-		
+
 		if (strcmp(&filenames[i][strlen(filenames[i]) - 4], ".csv") == 0){
 			// checking extension of files
 			// correct file
@@ -182,15 +176,9 @@ int main(int argc, char **argv){
 		printf("\n");
 	}
 	
-	
-	reverse(&head);
-		
+	reverse(&head);	
 	sort();
-	
 	graph();
-	//meetings();
-	
-	
 	
     return 0;
 }
@@ -226,7 +214,6 @@ int maxLen(int limit){
 
 // function to calculate how many digits in the number
 long int numLen(int n) {
-  
   int count = 0;
  
   do {
@@ -270,38 +257,34 @@ int fileRead(char *str){
                 // Column 1
                 if (column == 0) {
 					strcpy(add->name,value); 
-
                 }
   
                 // Column 2
-                if (column == 1) {
-				   add->participants = atoi(value);
+                if (column == 1 && pval==1) {
+				   add->all = atoi(value);
                 }
   
                 // Column 3
-                if (column == 2) {
-					strcpy(add->time,value);
+                if (column == 2 && tval==1) {
+					add->all= timeSeconds(value)/60;
+					//strcpy(add->time,value);
                 }
-				
+
                 value = strtok(NULL, ","); // updating value
                 column++;
             }
-			add->seconds = timeSeconds(add->time);
-			add->meetings =1;
-			
-			add->minutes = (add->seconds)/60;
-			
+			//add->seconds = timeSeconds(add->time);
+			if(pval==0 && tval==0){
+				add->all =1;
+			}
 			add->next = head;
 			head= add;
 			removeDuplicates(add);
-
         }
-  
         // Close the file
         fclose(fp);
     }
-	return 0;
-	
+	return 0;	
 }
 
 // special function to calculate length of string 
@@ -310,8 +293,7 @@ long int strLen(char * str){
 		return strlen(str)-1;
 	}else{
 		return strlen(str);
-	}
-	
+	}	
 }
 
 // function to print a single bar
@@ -341,8 +323,8 @@ void print(int a,int val,int ind, char* str){
 	printf(" %s",str);
 	for (int i=0; i<maxlen+1-a; i++){
 		printf(" ");
-	}printf("\u2502");
-	
+	}
+	printf("\u2502");
 	printSquares(squares);
 	printf("%d", val);
 	printf("\n");
@@ -365,8 +347,7 @@ void printFinalLine(int maxlen){
 	printSpaces(maxlen);
 	printf("\u2514");
 	for (int i=0; i<80-maxlen-1-2; i++){
-		printf("\u2500");
-		
+		printf("\u2500");	
 	}
 	printf("\n");
 }
@@ -374,8 +355,7 @@ void printFinalLine(int maxlen){
 // function to print initial spaces in the graph
 void printSpaces(int maxlen){
 	for (int i=0; i<maxlen+2; i++){
-		printf(" ");
-		
+		printf(" ");	
 	}
 }
 
@@ -389,19 +369,11 @@ void printSquares(int squares){
 }
 
 // getting sum of all elements in specific kind
-int sum(){
-	int sum=0;
+long long int sum(){
+	long long int sum=0;
 	data_t* current=head;
 	while(current!=NULL){
-		if(pval==1){
-			sum+=current->participants;
-		}
-		else if(tval==1){
-			sum+=current->minutes;
-		}
-		else{
-			sum+=current->meetings;
-		}
+		sum+=current->all;
 		current=current->next;
 	}
 	return sum;
@@ -416,45 +388,26 @@ void graph(){
 		if(strlen(current->name)>maxlen){
 			maxlen = strlen(current->name);
 		}
-		
-		if(pval){
-			if(numLen(current->participants)>maxdig){
-			maxdig = numLen(current->participants);
+			if(numLen(current->all)>maxdig){
+				maxdig = numLen(current->all);
 			}
-		}else if(tval){
-			if(numLen(current->minutes)>maxdig){
-			maxdig = numLen(current->minutes);
-			}
-		}else{
-			if(numLen(current->meetings)>maxdig){
-			maxdig = numLen(current->meetings);
-			}
-		}
 		current=current->next;
-
 	}
 }
 	
-	// calculating useful value
+	// calculating printarea value
 	printarea = 80-maxlen - 3 -maxdig; 
-	
 	data_t* current = head;
+	
 	for (int i=0; i<lval; i++){
 		int len = strlen(current->name);
-		if(pval){
-			print(len,current->participants,i,current->name);
-		}else if(tval){
-			print(len,current->minutes,i,current->name);
-		}else{
-			print(len,current->meetings,i,current->name);
-		}
+		print(len,current->all,i,current->name);
 		current= current->next;
 	}
 	
 	if (lval>0){
 		printFinalLine(maxlen);
-	}
-	
+	}	
 }
 
 // funcction to check that geven string is Number or not
@@ -476,7 +429,7 @@ void sort() {
    char tempname[50];
    int meet;
    int size = ind+1 ;
-	k=size;
+   k=size;
 	
    for ( i = 0 ; i < size-1 ; i++, k-- ) {
       current = head;
@@ -484,57 +437,20 @@ void sort() {
 		
       for ( j = 1 ; j < k ; j++ ) {   
 
-         if (pval && current->participants < next->participants ) {
+         if (current->all < next->all ) {
 			// only take care about participants number and names
-			meet = current->participants;
-			current->participants = next->participants;
-			next->participants = meet;
+			meet = current->all;
+			current->all = next->all;
+			next->all = meet;
 			
 			strcpy(tempname , current->name);
 			strcpy(current->name , next->name);
-			strcpy(next->name , tempname);
-			
-		 }else if(tval && current->minutes < next->minutes){
-			// only take care about total of minutes and names
-			meet = current->minutes;
-			current->minutes = next->minutes;
-			next->minutes = meet;
-			
-			strcpy(tempname , current->name);
-			strcpy(current->name , next->name);
-			strcpy(next->name , tempname);
-				
-		 }else if(!pval && !tval && current->meetings < next->meetings ){
-			// only take care about meeting count and names
-			meet = current->meetings;
-			current->meetings = next->meetings;
-			next->meetings = meet;
-		
-			strcpy(tempname , current->name);
-			strcpy(current->name , next->name);
-			strcpy(next->name , tempname);
-
-         }else{}
-			
+			strcpy(next->name , tempname);	
+		 }	
          current = current->next;
          next = next->next;
       }
    }   
-}
-
-// function to check program without printing graph (not used in final program)
-void printAll(){
-    // starting from first link
-    data_t *ptr = head;
-    
-    // going through the list
-    while(ptr!= NULL){
-		printf("%s %d %d %d", ptr->name, ptr-> meetings, ptr-> participants, ptr-> minutes);
-		printf("\n");
-        ptr = ptr -> next;
-    }
-    printf("\n");
-    
 }
 
 // function to remove same name entries
@@ -548,18 +464,14 @@ void removeDuplicates(data_t* element){
     // do nothing if the list is empty 
     if (now == NULL)
        return ;
- 
+
     // Traverse the list till last node 
     while (now->next != NULL)
     {
        // Compare current node with next node 
        if (!strcmp((element->name) , (now->next->name)))
        {
-		   element->meetings=now->next->meetings+1;
-		   element->participants = now->next->participants+ element->participants;
-		   element->seconds =now->next->seconds + element->seconds;
-		   element->minutes =now->next->minutes + element->minutes;
-                        
+		   element->all =now->next->all + element->all;             
            next_next = now->next->next;
            free(now->next);
            now->next = next_next; 
@@ -591,12 +503,6 @@ static void reverse(data_t** head_ref){
 
 // function to calculating printing factor
 int factor(){
-	if(pval){
-		pfactor = (float)(head->participants)/(float)printarea;
-	}else if(tval){
-		pfactor = (float)(head->minutes)/(float)printarea;
-	}else{
-		pfactor = (float)(head->meetings)/(float)printarea;
-	}
+	pfactor = (float)(head->all)/(float)printarea;
 	return pfactor;
 }
